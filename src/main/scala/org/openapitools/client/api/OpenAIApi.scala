@@ -11,6 +11,8 @@
  */
 package org.openapitools.client.api
 
+import org.json4s.DefaultFormats
+import org.json4s.native.Serialization
 import org.openapitools.client.model.CreateAnswerRequest
 import org.openapitools.client.model.CreateAnswerResponse
 import org.openapitools.client.model.CreateChatCompletionRequest
@@ -34,6 +36,7 @@ import org.openapitools.client.model.CreateTranslationResponse
 import org.openapitools.client.model.DeleteFileResponse
 import org.openapitools.client.model.DeleteModelResponse
 import org.openapitools.client.model.Engine
+
 import java.io.File
 import org.openapitools.client.model.FineTune
 import org.openapitools.client.model.ImagesResponse
@@ -46,7 +49,7 @@ import org.openapitools.client.model.Model
 import org.openapitools.client.model.OpenAIFile
 import org.openapitools.client.core.JsonSupport._
 import sttp.client3._
-import sttp.model.Method
+import sttp.model.{MediaType, Method}
 
 object OpenAIApi {
 
@@ -212,28 +215,34 @@ class OpenAIApi(baseUrl: String) {
    * @param responseFormat The format in which the generated images are returned. Must be one of `url` or `b64_json`.
    * @param user A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices/end-user-ids). 
    */
-//  def createImageEdit(image: File, prompt: String, mask: Option[File] = None, `n`: Option[Int] = None, size: Option[String] = None, responseFormat: Option[String] = None, user: Option[String] = None
-//): Request[Either[ResponseException[String, Exception], ImagesResponse], Any] =
-//    basicRequest
-//      .method(Method.POST, uri"$baseUrl/images/edits")
-//      .contentType("multipart/form-data")
-//      .multipartBody(Seq(
-//                multipartFile("image", image)
-//,
-//                mask.map(multipartFile("mask", _))
-//,
-//                multipart("prompt", prompt)
-//,
-//                `n`.map(multipart("n", _))
-//,
-//                size.map(multipart("size", _))
-//,
-//                responseFormat.map(multipart("response_format", _))
-//,
-//                user.map(multipart("user", _))
-//
-//      ).flatten)
-//      .response(asJson[ImagesResponse])
+  def createImageEdit(image: File, prompt: String, mask: Option[File] = None, `n`: Option[Int] = None, size: Option[String] = None, responseFormat: Option[String] = None, user: Option[String] = None
+): Request[Either[ResponseException[String, Exception], ImagesResponse], Any] = {
+
+    implicit val intSerializer: BodySerializer[Int] = { int: Int =>
+      StringBody(int.toString, "UTF-8", MediaType.TextPlain)
+    }
+
+    basicRequest
+      .method(Method.POST, uri"$baseUrl/images/edits")
+      .contentType("multipart/form-data")
+      .multipartBody(Seq(
+                Some(multipartFile("image", image))
+,
+                mask.map(multipartFile("mask", _))
+,
+                Some(multipart("prompt", prompt))
+,
+                `n`.map(multipart("n", _))
+,
+                size.map(multipart("size", _))
+,
+                responseFormat.map(multipart("response_format", _))
+,
+                user.map(multipart("user", _))
+
+      ).flatten)
+      .response(asJson[ImagesResponse])
+  }
 
   /**
    * Expected answers:
@@ -245,24 +254,29 @@ class OpenAIApi(baseUrl: String) {
    * @param responseFormat The format in which the generated images are returned. Must be one of `url` or `b64_json`.
    * @param user A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices/end-user-ids). 
    */
-//  def createImageVariation(image: File, `n`: Option[Int] = None, size: Option[String] = None, responseFormat: Option[String] = None, user: Option[String] = None
-//): Request[Either[ResponseException[String, Exception], ImagesResponse], Any] =
-//    basicRequest
-//      .method(Method.POST, uri"$baseUrl/images/variations")
-//      .contentType("multipart/form-data")
-//      .multipartBody(Seq(
-//                multipartFile("image", image)
-//,
-//                `n`.map(multipart("n", _))
-//,
-//                size.map(multipart("size", _))
-//,
-//                responseFormat.map(multipart("response_format", _))
-//,
-//                user.map(multipart("user", _))
-//
-//      ).flatten)
-//      .response(asJson[ImagesResponse])
+  def createImageVariation(image: File, `n`: Option[Int] = None, size: Option[String] = None, responseFormat: Option[String] = None, user: Option[String] = None
+): Request[Either[ResponseException[String, Exception], ImagesResponse], Any] = {
+    implicit val intSerializer: BodySerializer[Int] = { int: Int =>
+      StringBody(int.toString, "UTF-8", MediaType.TextPlain)
+    }
+
+    basicRequest
+      .method(Method.POST, uri"$baseUrl/images/variations")
+      .contentType("multipart/form-data")
+      .multipartBody(Seq(
+                Some(multipartFile("image", image))
+,
+                `n`.map(multipart("n", _))
+,
+                size.map(multipart("size", _))
+,
+                responseFormat.map(multipart("response_format", _))
+,
+                user.map(multipart("user", _))
+
+      ).flatten)
+      .response(asJson[ImagesResponse])
+  }
 
   /**
    * Expected answers:
@@ -304,26 +318,31 @@ class OpenAIApi(baseUrl: String) {
    * @param temperature The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. If set to 0, the model will use [log probability](https://en.wikipedia.org/wiki/Log_probability) to automatically increase the temperature until certain thresholds are hit. 
    * @param language The language of the input audio. Supplying the input language in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format will improve accuracy and latency. 
    */
-//  def createTranscription(file: File, model: String, prompt: Option[String] = None, responseFormat: Option[String] = None, temperature: Option[Double] = None, language: Option[String] = None
-//): Request[Either[ResponseException[String, Exception], CreateTranscriptionResponse], Any] =
-//    basicRequest
-//      .method(Method.POST, uri"$baseUrl/audio/transcriptions")
-//      .contentType("multipart/form-data")
-//      .multipartBody(Seq(
-//                multipartFile("file", file)
-//,
-//                multipart("model", model)
-//,
-//                prompt.map(multipart("prompt", _))
-//,
-//                responseFormat.map(multipart("response_format", _))
-//,
-//                temperature.map(multipart("temperature", _))
-//,
-//                language.map(multipart("language", _))
-//
-//      ).flatten)
-//      .response(asJson[CreateTranscriptionResponse])
+  def createTranscription(file: File, model: String, prompt: Option[String] = None, responseFormat: Option[String] = None, temperature: Option[Double] = None, language: Option[String] = None
+): Request[Either[ResponseException[String, Exception], CreateTranscriptionResponse], Any] = {
+    implicit val doubleSerializer: BodySerializer[Double] = { double: Double =>
+      StringBody(double.toString, "UTF-8", MediaType.TextPlain)
+    }
+
+    basicRequest
+      .method(Method.POST, uri"$baseUrl/audio/transcriptions")
+      .contentType("multipart/form-data")
+      .multipartBody(Seq(
+                Some(multipartFile("file", file))
+,
+                Some(multipart("model", model))
+,
+                prompt.map(multipart("prompt", _))
+,
+                responseFormat.map(multipart("response_format", _))
+,
+                temperature.map(multipart("temperature", _))
+,
+                language.map(multipart("language", _))
+
+      ).flatten)
+      .response(asJson[CreateTranscriptionResponse])
+  }
 
   /**
    * Expected answers:
@@ -335,24 +354,29 @@ class OpenAIApi(baseUrl: String) {
    * @param responseFormat The format of the transcript output, in one of these options: json, text, srt, verbose_json, or vtt. 
    * @param temperature The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. If set to 0, the model will use [log probability](https://en.wikipedia.org/wiki/Log_probability) to automatically increase the temperature until certain thresholds are hit. 
    */
-//  def createTranslation(file: File, model: String, prompt: Option[String] = None, responseFormat: Option[String] = None, temperature: Option[Double] = None
-//): Request[Either[ResponseException[String, Exception], CreateTranslationResponse], Any] =
-//    basicRequest
-//      .method(Method.POST, uri"$baseUrl/audio/translations")
-//      .contentType("multipart/form-data")
-//      .multipartBody(Seq(
-//                multipartFile("file", file)
-//,
-//                multipart("model", model)
-//,
-//                prompt.map(multipart("prompt", _))
-//,
-//                responseFormat.map(multipart("response_format", _))
-//,
-//                temperature.map(multipart("temperature", _))
-//
-//      ).flatten)
-//      .response(asJson[CreateTranslationResponse])
+  def createTranslation(file: File, model: String, prompt: Option[String] = None, responseFormat: Option[String] = None, temperature: Option[Double] = None
+): Request[Either[ResponseException[String, Exception], CreateTranslationResponse], Any] = {
+    implicit val doubleSerializer: BodySerializer[Double] = { double: Double =>
+      StringBody(double.toString, "UTF-8", MediaType.TextPlain)
+    }
+
+    basicRequest
+      .method(Method.POST, uri"$baseUrl/audio/translations")
+      .contentType("multipart/form-data")
+      .multipartBody(Seq(
+                Some(multipartFile("file", file))
+,
+                Some(multipart("model", model))
+,
+                prompt.map(multipart("prompt", _))
+,
+                responseFormat.map(multipart("response_format", _))
+,
+                temperature.map(multipart("temperature", _))
+
+      ).flatten)
+      .response(asJson[CreateTranslationResponse])
+  }
 
   /**
    * Expected answers:
