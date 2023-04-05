@@ -6,9 +6,10 @@ scalaVersion := "2.13.5"
 crossScalaVersions := Seq(scalaVersion.value, "2.12.13")
 
 libraryDependencies ++= Seq(
-  "com.softwaremill.sttp.client3" %% "core" % "3.3.18",
-  "com.softwaremill.sttp.client3" %% "json4s" % "3.3.18",
-  "org.json4s" %% "json4s-jackson" % "3.6.11"
+  "com.softwaremill.sttp.client3" %% "core" % "3.8.13",
+  "com.softwaremill.sttp.client3" %% "json4s" % "3.8.13",
+  "org.json4s" %% "json4s-native" % "4.0.6",
+  "org.json4s" %% "json4s-jackson" % "4.0.6"
 )
 
 scalacOptions := Seq(
