@@ -14,7 +14,7 @@ package org.openapitools.client.model
 
 case class ChatCompletionRequestMessage(
   /* The role of the author of this message. */
-  role: ChatCompletionRequestMessageEnums.Role,
+  role: String,
   /* The contents of the message */
   content: String,
   /* The name of the user in a multi-user chat */

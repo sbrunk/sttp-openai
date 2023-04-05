@@ -18,4 +18,3 @@ case class Model(
   created: Int,
   ownedBy: String
 )
-

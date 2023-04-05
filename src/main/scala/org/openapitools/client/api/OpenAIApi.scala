@@ -92,12 +92,13 @@ class OpenAIApi(baseUrl: String) {
    * @param createChatCompletionRequest 
    */
   def createChatCompletion(createChatCompletionRequest: CreateChatCompletionRequest
-): Request[Either[ResponseException[String, Exception], CreateChatCompletionResponse], Any] =
+): Request[Either[String, String], Any] =
     basicRequest
       .method(Method.POST, uri"$baseUrl/chat/completions")
       .contentType("application/json")
       .body(createChatCompletionRequest)
-      .response(asJson[CreateChatCompletionResponse])
+      .response(asString)
+//      .response(asJson[CreateChatCompletionResponse])
 
   /**
    * Expected answers:
