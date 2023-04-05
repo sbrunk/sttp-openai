@@ -1,22 +1,18 @@
-import com.softwaremill.SbtSoftwareMillCommon.commonSmlBuildSettings
+version := "1.0.0"
+name := "openapi-client"
+organization := "org.openapitools"
 
-lazy val commonSettings = commonSmlBuildSettings ++ Seq(
-  organization := "com.softwaremill.xxx",
-  scalaVersion := "2.13.10"
+scalaVersion := "2.13.5"
+crossScalaVersions := Seq(scalaVersion.value, "2.12.13")
+
+libraryDependencies ++= Seq(
+  "com.softwaremill.sttp.client3" %% "core" % "3.3.18",
+  "com.softwaremill.sttp.client3" %% "json4s" % "3.3.18",
+  "org.json4s" %% "json4s-jackson" % "3.6.11"
 )
 
-val scalaTest = "org.scalatest" %% "scalatest" % "3.2.15" % Test
-
-lazy val rootProject = (project in file("."))
-  .settings(commonSettings: _*)
-  .settings(publishArtifact := false, name := "root")
-  .aggregate(core)
-
-lazy val core: Project = (project in file("core"))
-  .settings(commonSettings: _*)
-  .settings(
-    name := "core",
-    libraryDependencies ++= Seq(
-      scalaTest
-    )
-  )
+scalacOptions := Seq(
+  "-unchecked",
+  "-deprecation",
+  "-feature"
+)
