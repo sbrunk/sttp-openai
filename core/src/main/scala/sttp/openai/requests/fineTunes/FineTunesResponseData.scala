@@ -7,42 +7,52 @@ object FineTunesResponseData {
   case class FineTunesData(
       id: String,
       `object`: String,
-      model: String,
-      created_at: Int,
-      fine_tuned_model: String,
+      model: Option[String],
+      createdAt: Int,
+      fineTunedModel: Option[String],
       hyperparams: Hyperparams,
-      organization_id: String,
-      result_files: Seq[File],
+      organizationId: String,
+      resultFiles: Seq[File],
       status: String,
-      validation_files: Seq[File],
-      training_files: Seq[File],
-      updated_at: Int
+      validationFiles: Seq[File],
+      trainingFiles: Seq[File],
+      updatedAt: Int
   )
 
   object FineTunesData {
     implicit def fineTunesDataRW: SnakePickle.ReadWriter[FineTunesData] = SnakePickle.macroRW[FineTunesData]
   }
   case class Hyperparams(
-      batch_size: Int,
-      learning_rate_multiplier: Double,
-      n_epochs: Int,
-      prompt_loss_weight: Double
+      batchSize: Int,
+      learningRateMultiplier: Double,
+      nEpochs: Int,
+      promptLossWeight: Double
   )
 
-  object Hyperparams {}
+  object Hyperparams {
+    implicit def hyperparamsRW: SnakePickle.ReadWriter[Hyperparams] = SnakePickle.macroRW[Hyperparams]
+  }
 
   case class File(
       id: String,
       `object`: String,
       bytes: Int,
-      created_at: Int,
+      createdAt: Int,
       filename: String,
       purpose: String
   )
+
+  object File {
+    implicit def fileRW: SnakePickle.ReadWriter[File] = SnakePickle.macroRW[File]
+  }
 
   case class FineTunesResponse(
       `object`: String,
       data: Seq[FineTunesData]
   )
+
+  object FineTunesResponse {
+    implicit def fineTunesResponse: SnakePickle.ReadWriter[FineTunesResponse] = SnakePickle.macroRW[FineTunesResponse]
+  }
 
 }

@@ -3,9 +3,9 @@ package sttp.openai.requests.models
 import org.scalatest.EitherValues
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import sttp.openai.fixtures
 import ModelsGetResponseData.{Data, ModelsResponse, Permission}
 import ModelsGetResponseData.ModelsResponse._
-import sttp.openai.fixtures
 import sttp.openai.json.SttpUpickleApiExtension
 
 class ModelsGetResponseDataSpec extends AnyFlatSpec with Matchers with EitherValues {
